@@ -2,14 +2,17 @@ from django.contrib import admin
 from django.urls import path, re_path, include
 from django.conf.urls import url
 
-from .views import home_page, about_page, contact_page, example_page, signup
+from .views import home_page, about_page, contact_page, signup
 
 urlpatterns = [
-    url(r'^signup/$', signup, name='signup'),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('', home_page, name='home'),
-    re_path(r'^about/$', about_page),
-    path('contact', contact_page),
-    path('example', example_page),
+    path('finances/', include('finances.urls')),
     path('admin/', admin.site.urls),
+
+    path('accounts/', include('django.contrib.auth.urls')),
+    url(r'^signup/$', signup, name='signup'),
+
+    path('', home_page, name='home'),
+    re_path(r'^about/$', about_page, name='about'),
+    path('contact/', contact_page, name='contact'),
+
 ]
