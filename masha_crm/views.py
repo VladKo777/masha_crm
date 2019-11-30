@@ -31,7 +31,7 @@ def signup(request):
 
 
 class HomeTemplateView(LoginRequiredMixin, FilterView, TemplateView):
-    filterset_class = AccountTransactionsFilter
+    # filterset_class = AccountTransactionsFilter
     template_name = "home_page.html"
 
     def get_context_data(self, *args, **kwargs):
