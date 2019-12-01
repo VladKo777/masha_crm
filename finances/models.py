@@ -1,13 +1,8 @@
 from django.contrib.auth.models import Group
+from django.utils.translation import gettext_lazy as _
 from django.db import models, transaction
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 from django.db.models import Sum
-from django.contrib.auth.models import User
-
-#
-# class Group(models.Model):
-#     myuser = models.ForeignKey(User, on_delete=models.PROTECT, related_name='groups')
 
 
 class Currency(models.Model):

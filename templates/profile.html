@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %} Finances {% endblock %}
+
+{% block content %}
+     <h2>Edit profile</h2>
+    <form method="post">
+        {% csrf_token %}
+         {{ user_form|crispy }}
+         {{ profile_form|crispy }}
+    <button class="btn btn-dark" type="submit">Save</button>
+
+    </form>
+
+
+{% endblock %}

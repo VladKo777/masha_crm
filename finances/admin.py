@@ -11,7 +11,6 @@ admin.site.register(Product)
 admin.site.register(ProductProvider)
 
 
-
 class AccountBalanceInlineAdmin(admin.StackedInline):
     verbose_name = _('Balance')
     model = AccountBalance

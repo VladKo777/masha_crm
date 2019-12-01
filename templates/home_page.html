@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{#{% load i18n %}#}
+{% block content %}
+{% load crispy_forms_field %}
+
+
+    {% if user.is_authenticated %}
+    <h3>Welcome {{ user.username }}!</h3>
+    {% else %}
+    <a href="{% url django.contrib.auth.login %}">Login</a>
+    {% endif %}
+<div class="table-responsive">
+<table class="table">
+        <thead class="">
+        {#  <thead class="thead-dark">#}
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Adress</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Group</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+    {% for user in users %}
+            <tr>
+                <th scope="row">{{ user.id }}</th>
+                <td>{{user.get_full_name}}</td>
+                <td>{% if user.profile.phone_number %}{{ user.profile.phone_number }} {% endif %}{% if not user.profile.phone_number %} - {% endif %}</td>
+                <td>м.{{ user.profile.city }}{% if user.profile.street %}, вул.{{ user.profile.street }} {% endif %}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.groups.all.0 }}</td>
+                <td>
+                    <a class="btn btn-outline-primary btn-sm" href="{% url 'update_profile'%}">Edit</a>
+                </td>
+            </tr>
+        {% endfor %}
+  </tbody>
+</table>
+    </div>
+
+{% endblock %}
