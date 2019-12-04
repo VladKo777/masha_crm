@@ -38,58 +38,6 @@ class HomeTemplateView(LoginRequiredMixin, TemplateView):
         context['group'] = Group.objects.all()
         return context
 
-
-# class TransactionListView(LoginRequiredMixin, ListView):
-# class ProductView(LoginRequiredMixin, ListView):
-#     template_name = "product_page.html"
-    # paginate_by = 10
-    # filterset_class = AccountTransactionsFilter
-
-    # def get(self, request, *args, **kwargs):
-    #     if not request.is_ajax():
-    #         return HttpResponseBadRequest()
-    #     return super().get(request, *args, **kwargs)
-
-    # def get_queryset(self):
-    #     counterparty = Account.objects.only_counterparty().values_list('id', flat=True)
-    #     for pk in counterparty:
-    #         if pk == self.kwargs['account_id']:
-    #             account = get_object_or_404(Account.objects.only_counterparty(), pk=self.kwargs['account_id'])
-    #             break
-    #     else:
-    #         account = get_object_or_404(Account, pk=self.kwargs['account_id'])
-    #     if self.request.GET['type'] == 'exchange':
-    #         return Transaction.objects.filter(Q(account_balance_to__account=account) & Q(type='exchange')).order_by('-pk')
-    #     elif self.request.GET['type'] == 'account':
-    #         return Transaction.objects.filter(
-    #             (Q(account_balance_to__account=account) & Q(type__exact='transaction') & (Q(approved=True) | Q(approved=False))) |
-    #             (Q(account_balance_from__account=account) & Q(type__exact='transaction') & (Q(approved=True) | Q(approved=False)))
-    #         ).order_by('-approved_date')
-
-class ProductView(LoginRequiredMixin, TemplateView):
-    template_name = "product_page.html"
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(ProductView, self).get_context_data(**kwargs)
-        context['product'] = User.objects.all()
-        context['group'] = Group.objects.all()
-        return context
-
-
-# class ProductView(LoginRequiredMixin, DetailView):
-#     model = Product
-#     template_name = "product_page.html"
-#
-#     # def get_queryset(self):
-#     #     return LoggedInAccountAPIView.check_admin(self)
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(ProductView, self).get_context_data(**kwargs)
-#         # form = TransactionForm()
-#
-#         return context
-
-
 @login_required
 def about_page(request):
     return render(request, "about.html")

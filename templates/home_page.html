@@ -5,7 +5,11 @@
 
 
     {% if user.is_authenticated %}
-    <h3>Welcome {{ user.username }}!</h3>
+    <div class="d-flex w-100 justify-content-between">
+        <h3 class="mb-1">User list:</h3>
+        <h5> welcome {{ user.username }}!</h5>
+    </div>
+
     {% else %}
     <a href="{% url django.contrib.auth.login %}">Login</a>
     {% endif %}

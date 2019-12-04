@@ -20,12 +20,6 @@ class UserForm(forms.ModelForm):
         fields = ('first_name', 'last_name', 'email')
 
 
-class ProfileForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ('phone_number', 'birth_date', 'comment', )
-
-
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
@@ -36,3 +30,5 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ('phone_number', 'city', 'street', 'birth_date', 'comment', )
+
+
