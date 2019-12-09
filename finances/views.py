@@ -27,12 +27,3 @@ class ProductView(LoginRequiredMixin, FormView):
         form.save()
         return super().form_valid(form)
 
-
-# class ProductView(LoginRequiredMixin, TemplateView):
-#     template_name = "product_page.html"
-#
-#     def get_context_data(self, *args, **kwargs):
-#         context = super(ProductView, self).get_context_data(**kwargs)
-#         context['form'] = ProductForm()
-#         context['products'] = Product.objects.all()
-#         return context
