@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.generic import ListView, DetailView, RedirectView, TemplateView, FormView
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -20,6 +21,11 @@ class ProductView(LoginRequiredMixin, FormView):
         context = super(ProductView, self).get_context_data(**kwargs)
         context['products'] = Product.objects.all()
         return context
+
+    def form_valid(self, form):
+        self.success_url = self.request.META.get('HTTP_REFERER') or reverse('finances')
+        form.save()
+        return super().form_valid(form)
 
 
 # class ProductView(LoginRequiredMixin, TemplateView):

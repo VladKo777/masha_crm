@@ -1,12 +1,27 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load bootstrap %}
 {#{% load crispy_forms_tags %}#}
+{#        {{ form.as_table }}#}
+        {#    {{ form|crispy }}#}
 
-    {% csrf_token %}
-    {{ form.as_table }}
-    {#    {{ form|crispy }}#}
 
-    <button class="btn btn-dark" type="submit">Save</button>
+    <form action="{% url 'product' %}" method="post">
+
+        <div class="form-group row">
+            {% csrf_token %}
+            {{ form.name|bootstrap  }}
+            {{ form.provider|bootstrap  }}
+            {{ form.cost|bootstrap  }}
+            {{ form.currency|bootstrap  }}
+
+            <div class="form-group">
+                <label >&nbsp;</label>
+                <div class=" ">
+                    <button class="btn btn-primary mb-3" type="submit">Save</button>
+                </div>
+            </div>
+        </div>
     </form>
 
     {% if user.is_authenticated %}

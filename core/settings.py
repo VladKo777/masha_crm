@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'blog',
     'core',
     'crispy_forms',
+    'bootstrapform',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
