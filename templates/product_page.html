@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load crispy_forms_filters %}
+{% load bootstrap_pagination %}
 
 
 <!-- Modal -->
@@ -45,7 +46,7 @@
         </tr>
         </thead>
         <tbody>
-    {% for product in products %}
+    {% for product in object_list %}
             <tr>
                 <th scope="row">{{ product.id }}</th>
                 <td>{{product.name}}</td>
@@ -56,5 +57,9 @@
   </tbody>
 </table>
     </div>
+
+{% if object_list %}
+    {% bootstrap_paginate page_obj range=10 show_first_last="true" %}
+{% endif %}
 
 {% endblock %}

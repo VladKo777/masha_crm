@@ -23,20 +23,25 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return redirect('home')
+            return redirect('/')
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
 
 
-class HomeTemplateView(LoginRequiredMixin, TemplateView):
+class HomeTemplateView(LoginRequiredMixin, ListView):
     template_name = "home_page.html"
+    paginate_by = 5
+
+    def get_queryset(self):
+        queryset = User.objects.all()
+        return queryset
 
     def get_context_data(self, *args, **kwargs):
         context = super(HomeTemplateView, self).get_context_data(**kwargs)
-        context['users'] = User.objects.all()
         context['group'] = Group.objects.all()
         return context
+
 
 @login_required
 def about_page(request):

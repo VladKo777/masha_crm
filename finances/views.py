@@ -13,14 +13,14 @@ def finances(request):
     return render(request, "finances.html")
 
 
-class ProductView(LoginRequiredMixin, FormView):
+class ProductView(LoginRequiredMixin, FormView, ListView):
+    paginate_by = 5
     form_class = ProductForm
     template_name = "product_page.html"
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(ProductView, self).get_context_data(**kwargs)
-        context['products'] = Product.objects.all()
-        return context
+    def get_queryset(self):
+        queryset = Product.objects.all().order_by('-id')
+        return queryset
 
     def form_valid(self, form):
         self.success_url = self.request.META.get('HTTP_REFERER') or reverse('finances')
