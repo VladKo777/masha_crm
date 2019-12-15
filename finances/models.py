@@ -1,6 +1,7 @@
 from django.contrib.auth.models import Group
 from django.utils.translation import gettext_lazy as _
 from django.db import models, transaction
+from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db.models import Sum
 
@@ -95,3 +96,33 @@ class Product(models.Model):
     def __str__(self):
         return "{} (виробник: {}), вартість {}{}".format(self.name, self.provider, self.cost, self.currency.iso_code)
 
+
+class Transaction(models.Model):
+    class Meta:
+        verbose_name = _('Transaction')
+        verbose_name_plural = _('Transactions')
+
+    STATUSES = (
+        ('buy', 'Купівля'),
+        ('sale', 'Продаж'),
+    )
+
+    account_balance = models.ForeignKey(AccountBalance, on_delete=models.CASCADE,
+                                        related_name='account_balance')
+    new_balance = models.DecimalField(null=True, blank=True, default=None, max_digits=20, decimal_places=2)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,
+                                related_name='product')
+    value = models.DecimalField(max_digits=20, decimal_places=2)
+    currency = models.ForeignKey(Currency, on_delete=models.PROTECT, related_name='currency')
+    surcharge = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True,
+                                    verbose_name=_('Surcharge'))
+    sent_from = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    sent_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+                                related_name='sent_transactions', )
+    type = models.CharField(max_length=15, choices=STATUSES, default="sale")
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_refund = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "{} товару '{}', вартість:{}{}, кому:{}".format(self.type, self.product, self.value,
+                                                               self.currency.iso_code, self.sent_by)
