@@ -1,11 +1,21 @@
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import ListView, DetailView, RedirectView, TemplateView, FormView
-from django.http import HttpResponse
+from django.views.generic import ListView, FormView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Product
+from .models import Product, Account
 from .forms import ProductForm, TransactionForm
+from django.shortcuts import get_object_or_404
+from rest_framework.generics import CreateAPIView, ListAPIView
+from .api.serializers import TransactionSerializer
+
+
+# @add_ability_to_create_many_objects
+class CreateTransactionAPIView(CreateAPIView):
+    serializer_class = TransactionSerializer
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
 
 @login_required

@@ -42,11 +42,17 @@ INSTALLED_APPS = [
     'bootstrapform',
     'django_filters',
     'bootstrap_pagination',
+    'rest_framework',
     # internal apps
     'finances',
     'blog',
     'core',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'home'
