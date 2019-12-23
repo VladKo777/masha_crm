@@ -2,13 +2,14 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 # from .forms import ExchangerForm
-from .models import Currency, Account, AccountType, AccountBalance, ProductProvider, Product
+from .models import Currency, Account, AccountType, AccountBalance, ProductProvider, Product, Transaction
 
 
 admin.site.register(Currency)
 admin.site.register(AccountType)
 admin.site.register(Product)
 admin.site.register(ProductProvider)
+admin.site.register(Transaction)
 
 
 class AccountBalanceInlineAdmin(admin.StackedInline):

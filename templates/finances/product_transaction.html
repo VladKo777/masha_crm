@@ -11,30 +11,175 @@
 {#            <button class="btn btn-primary" type="submit">Save</button>#}
 {#        </div>#}
 {#    </form>#}
+<div id="main-content">
+
+ <form action="{% url "create_transaction_api"%}" method="post" class="transaction-form">
+
+{#    <form method="POST" id="post-form">#}
+{#        {% csrf_token %}#}
+        <div>
+            <div class="col-7">
+                {{ form.sent_to|as_crispy_field }}
+            </div>
+            <div class='table'>
+                <table class='no_error'>
+                    <div class="form-row col-12">
+                        <div class="col-lg-4">
+                            {{ form.product|as_crispy_field }}
+                        </div>
+                        <div class="col-lg-3">
+                            {{ form.value|as_crispy_field }}
+                        </div>
+                    </div>
+                </table>
+            </div>
+            <button class="ml-3 btn btn-primary" type="button" id="add_more">
+                <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                Розширити
+            </button>
+            <button type="submit" class="btn btn-primary transaction-confirm" id="transaction-confirm">Продати</button>
+        </div>
+    </form>
+
+</div>
+
+    <script>
+        $('#add_more').click(function () {
+            cloneMore('div.table:last', 'service');
+        });
+        function cloneMore(selector, type) {
+            var newElement = $(selector).clone(true);
+            console.log(newElement)
+            newElement.find(':input').each(function () {
+                var name = $(this).attr('name') + 1;
+                var id = 'id_' + name;
+                $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+            });
+            $(selector).after(newElement);
+         }
+    </script>
+
+<script>
+        $(document).ready(function () {
+            $('.transaction-confirm').on('click', function (e) {
+                e.preventDefault();
+            let form = $(this).closest('.transaction-form');
+            let data = getFormData(form);
+            {#console.log(data)#}
+
+            let url = form.attr('action');
+            {#console.log(url)#}
 
 
- <form action="{% url 'product_transaction' %}" method="post">
-     {% csrf_token %}
-             <div class="form-row">
-                 <div class="col-lg-3">
-                     {{ form.sent_to|as_crispy_field }}
-                 </div>
-                 <div class="col-lg-3">
-                     {{ form.product|as_crispy_field }}
-                 </div>
-                 <div class="col-lg-1">
-                     {{ form.value|as_crispy_field }}
-                 </div>
-                 <div class="col-lg-1">
-                     {{ form.surcharge|as_crispy_field }}
-                 </div>
-                 <div style="margin-top:38px; " class="col-lg-2">
-                     <button class="btn btn-primary" type="submit">Продати</button>
-                 </div>
-             </div>
- </form>
+                let sent_to_Id = data["sent_to"];
+                {#console.log('sent_to_Id')#}
+                {#console.log(sent_to_Id)#}
+                delete data["sent_to"];
+                let newData = [];
+                console.log(data)
+                {#let product = data['product'];#}
+                {#let value = data['value'];#}
+                {#newData.push({"sent_to": sent_to_Id, "product": product, "value": value})#}
+
+
+                Object.keys(data).forEach(function (key, index) {
+                    let product = data[key]
+                    delete data[key]
+                     Object.keys(data).forEach(function (key, index) {
+                         let value = data[key]
+
+                            if (data[key]) {
+                                newData.push({"sent_to": sent_to_Id, "product": product, "value": value})
+                            }
+                     })
+                 })
+                data = {"data": JSON.stringify(newData)}
+                // console.log('newData777', newData)
+                // console.log('data', data)
+                form.find('input').each(function () {
+                    $(this).val("")
+                });
+                form.find('select').val("");
+                transactionConfirmRequest(form, url, data)
+            });
+
+    const transactionConfirmRequest = (form, url, data) => {
+        console.log('data33', data)
+        $.ajax({
+            url: url,
+            method: 'POST',
+            headers: {"X-CSRFToken": variables.csrfToken},
+            data,
+        }).done(function (data) {
+            console.log('done', data)
+            $('#main-content').prepend(
+                `<div class='alert alert-primary'>Транзакція успішно створена</div>`
+            );
+
+        }).fail(function (data) {
+            console.log('bad data', data)
+            data = data.responseJSON;
+            {#for (let a in data) {#}
+            {#    if (a === 'non_field_errors') {#}
+            {#        $('.change-validation-message').append(`<p class="excanger-form-validation-backend-checks" style="color: darkred">${data[a][0]}</p>`);#}
+            {#    } else {#}
+            {#        $(`#id_${a}:not([type='hidden'])`).closest('div').append(`<p class="excanger-form-validation-backend-checks" style="color: darkred">${data[a][0]}</p>`);#}
+            {#    }#}
+            {# }#}
+        })
+    }
+
+            function getFormData($form) {
+                let unindexed_array = $form.serializeArray();
+                let indexed_array = {};
+
+                $.map(unindexed_array, function (n, i) {
+                    indexed_array[n['name']] = n['value'];
+                });
+
+                return indexed_array;
+            }
+
+        });
+
+</script>
 
 {% endblock %}
+
+
+
+{#<script>#}
+{##}
+{#    $(document).on('submit', '#post-form',function(e){#}
+{#    $.ajax({#}
+{#        type:'POST',#}
+{#        url:'{% url "create" %}',#}
+{#        data:{#}
+{#            sent_to:$('#id_sent_to').val(),#}
+{#            product:$('#id_product').val(),#}
+{#            value:$('#id_value').val(),#}
+{#            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),#}
+{#            action: 'post'#}
+{#        },#}
+{#        success:function(json){#}
+{#            document.getElementById("post-form").reset();#}
+{#            $(".posts").prepend('<div class="col-md-6">'+#}
+{#                '<div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">' +#}
+{#                    '<div class="col p-4 d-flex flex-column position-static">' +#}
+{#                        '<h3 class="mb-0">' + json.title + '</h3>' +#}
+{#                        '<p class="mb-auto">' + json.description + '</p>' +#}
+{#                    '</div>' +#}
+{#                '</div>' +#}
+{#            '</div>'#}
+{#            )#}
+{#        },#}
+{#        error : function(xhr,errmsg,err) {#}
+{#        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console#}
+{#    }#}
+{#    });#}
+{# });#}
+{##}
+{#</script>#}
 
 
 

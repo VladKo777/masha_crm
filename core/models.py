@@ -9,14 +9,11 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                                  message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
-    phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True)  # validators should be a list
+    phone_number = models.CharField(validators=[phone_regex], max_length=17, null=True, blank=True)  # validators should be a list
     city = models.CharField(max_length=30, null=True, blank=True)
     street = models.CharField(max_length=30, null=True, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     comment = models.TextField(max_length=500, null=True, blank=True)
-
-    # def __str__(self):  # __unicode__ for Python 2
-    #     return self.user.username
 
 
 @receiver(post_save, sender=User)
@@ -30,8 +27,18 @@ def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
 
-@receiver(post_save, sender=User)
-def create_or_update_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-    instance.profile.save()
+# @receiver(post_save, sender=User)
+# def create_or_update_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)
+#     instance.profile.save()
+
+
+# def update_profile(request, user_id):
+#     user = User.objects.get(pk=user_id)
+#     user.profile.bio = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit...'
+#     user.save()
+
+
+# class Client(models.Model):
+#     name =

@@ -16,5 +16,4 @@ urlpatterns = [
     path('contact/', contact_page, name='contact'),
     path('update_profile/<int:pk>/', update_profile, name='update_profile'),
 
-
 ]

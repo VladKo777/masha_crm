@@ -8,10 +8,12 @@ from .forms import ProductForm, TransactionForm
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import CreateAPIView, ListAPIView
 from .api.serializers import TransactionSerializer
+from finances.api.decorators import add_ability_to_create_many_objects
 
 
-# @add_ability_to_create_many_objects
+@add_ability_to_create_many_objects
 class CreateTransactionAPIView(CreateAPIView):
+    queryset = Account.objects.all()
     serializer_class = TransactionSerializer
 
     def get_serializer_context(self):

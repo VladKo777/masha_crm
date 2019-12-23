@@ -123,6 +123,32 @@ class Transaction(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_refund = models.BooleanField(default=False)
 
+    # def save(self, **kwargs):
+    #
+    #     with open('MyLog.txt', 'a', encoding='utf-8') as file:
+    #         file.write('9999''{}\n'.format(  'SAVE METHOD'  ))
+        # with transaction.atomic():
+        #     if not self.need_to_approve and not self.pk:
+        #         self.account_balance_from.balance -= self.value_from
+        #         self.account_balance_from.save()
+        #         if self.account_balance_to.currency.iso_code == 'UAH':
+        #             self.account_balance_to.balance += (self.value_to - self.short_change)
+        #         elif self.account_balance_from.currency.iso_code != 'UAH':
+        #             self.account_balance_to.balance += self.value_to
+        #             if self.short_change:
+        #                 self.account_uah_balance.balance -= self.short_change
+        #                 self.account_uah_balance.save()
+        #             if self.surcharge:
+        #                 self.account_uah_balance.balance += self.surcharge
+        #                 self.account_uah_balance.save()
+        #         else:
+        #             self.account_balance_to.balance += self.value_to
+        #         self.account_balance_to.save()
+        #         self.new_balance_from = self.account_balance_from.balance
+        #         self.new_balance_to = self.account_balance_to.balance
+        #     self.daily_number_increment()
+        #     super().save(**kwargs)
+
     def __str__(self):
-        return "{} товару '{}', вартість:{}{}, кому:{}".format(self.type, self.product, self.value,
-                                                               self.currency.iso_code, self.sent_by)
+        return "Ініціатор - {}, кому - {}, {} товар - '{}', продано за:{}{}, дохід:{}{} ".format(self.sent_from, self.sent_to, self.type, self.product, self.value,
+                                                               self.currency.iso_code, self.surcharge, self.currency.iso_code)
