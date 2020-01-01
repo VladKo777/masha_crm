@@ -1,5 +1,18 @@
-json_string_data >>> False
-23.00
-9999SAVE METHOD
-json_string_data >>> False
-12.00
+{'sent_to': <User: Masha>, 'product': <Product: Антитусин (виробник: Даниця - Форте), вартість 300.00UAH>, 'value': Decimal('1000.00')}
+Masha
+Антитусин (виробник: Даниця - Форте), вартість 300.00UAH
+1000.00
+1111
+
+
+TransactionSerializer(context={'request': <rest_framework.request.Request object>}, data=<QueryDict: {'csrfmiddlewaretoken': ['fiYxnwkXz27Rk8dahyVEVhNoriqY88YUBPBr4ylf3AkJtQlXN5Eq82QH59xzMgIw'], 'sent_to': ['1'], 'product': ['1'], 'value': ['22']}>):
+    sent_to = PrimaryKeyRelatedField(queryset=<QuerySet [<User: admin>, <User: Masha>, <User: dima>, <User: kolia>, <User: kolia2>, <User: Test>]>)
+    product = PrimaryKeyRelatedField(queryset=<QuerySet [<Product: Нафтазін (виробник: Даниця - Форте), вартість 20.00UAH>, <Product: Атоксил (виробник: Біофарма), вартість 209.00UAH>, <Product: Энтерофурил (виробник: ТОВ "Імунолог"), вартість 115.00UAH>, <Product: Линекс капсулы №16 (виробник: Біофарма), вартість 140.50UAH>, <Product: Пектусон (виробник: Біофарма), вартість 22.00UAH>, <Product: фарксин (виробник: ТОВ "Імунолог"), вартість 30.00EUR>, <Product: Антитусин (виробник: Даниця - Форте), вартість 300.00UAH>, <Product: Імунобум (виробник: ТОВ "Юрія-Фарм"), вартість 400.00USD>, <Product: Похмелин (виробник: Біофарма), вартість 100.00UAH>, <Product: Нафтазін (виробник: Даниця - Форте), вартість 10.00UAH>, <Product: Antitusin pro (виробник: Біофарма), вартість 200.00UAH>]>)
+    value = DecimalField(decimal_places=2, max_digits=20)
+2.00
+
+
+1111
+1111
+1111
+1111

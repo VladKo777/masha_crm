@@ -107,26 +107,22 @@ class Transaction(models.Model):
         ('sale', 'Продаж'),
     )
 
-    account_balance = models.ForeignKey(AccountBalance, on_delete=models.CASCADE,
-                                        related_name='account_balance')
-    new_balance = models.DecimalField(null=True, blank=True, default=None, max_digits=20, decimal_places=2)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE,
-                                related_name='product')
+    sent_from = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    sent_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='sent_transactions')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product')
     value = models.DecimalField(max_digits=20, decimal_places=2)
     currency = models.ForeignKey(Currency, on_delete=models.PROTECT, related_name='currency')
     surcharge = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True,
                                     verbose_name=_('Surcharge'))
-    sent_from = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    sent_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
-                                related_name='sent_transactions', )
     type = models.CharField(max_length=15, choices=STATUSES, default="sale")
     created_at = models.DateTimeField(auto_now_add=True)
     is_refund = models.BooleanField(default=False)
+    # account_balance = models.ForeignKey(AccountBalance, on_delete=models.CASCADE, related_name='account_balance')
+    # new_balance = models.DecimalField(null=True, blank=True, default=None, max_digits=20, decimal_places=2)
+
 
     # def save(self, **kwargs):
-    #
-    #     with open('MyLog.txt', 'a', encoding='utf-8') as file:
-    #         file.write('9999''{}\n'.format(  'SAVE METHOD'  ))
+
         # with transaction.atomic():
         #     if not self.need_to_approve and not self.pk:
         #         self.account_balance_from.balance -= self.value_from

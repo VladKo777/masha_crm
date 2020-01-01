@@ -11,8 +11,9 @@ def add_ability_to_create_many_objects(original_class):
         """
 
         json_string_data = request.data.get('data', False)
-        with open('MyLog.txt', 'a', encoding='utf-8') as file:
-            file.write('json_string_data >>> ''{}\n'.format(  json_string_data  ))
+
+        # with open('MyLog.txt', 'a', encoding='utf-8') as file:
+        #     file.write('json_string_data >>> ''{}\n'.format(  json_string_data  ))
 
         if not json_string_data:
             return super(original_class, self).create(request, *args, **kwargs)

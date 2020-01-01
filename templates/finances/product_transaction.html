@@ -3,20 +3,10 @@
 {% load bootstrap_pagination %}
 {% block content %}
 
-{#    <h1> Transactions page </h1>#}
-{#    <form action="{% url 'product_transaction' %}" method="post">#}
-{#        {% csrf_token %}#}
-{#        {{ form|crispy }}#}
-{#        <div class="modal-footer">#}
-{#            <button class="btn btn-primary" type="submit">Save</button>#}
-{#        </div>#}
-{#    </form>#}
+
 <div id="main-content">
 
- <form action="{% url "create_transaction_api"%}" method="post" class="transaction-form">
-
-{#    <form method="POST" id="post-form">#}
-{#        {% csrf_token %}#}
+    <form action="{% url "create_transaction_api"%}" method="post" id="post-form" class="transaction-form">
         <div>
             <div class="col-7">
                 {{ form.sent_to|as_crispy_field }}
@@ -41,6 +31,40 @@
         </div>
     </form>
 
+
+<h3 class="mt-4">Список транзакцій</h3>
+<div class="table-responsive">
+<table class="table">
+        <thead class="">
+        {#  <thead class="thead-dark">#}
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Назва продукта</th>
+            <th scope="col">Ціна продажу</th>
+            <th scope="col">Навар</th>
+            <th scope="col">Хто - Кому</th>
+            <th scope="col">Час створення</th>
+        </tr>
+        </thead>
+        <tbody>
+    {% for product in object_list %}
+            <tr>
+                <th scope="row">{{ product.id }}</th>
+                <td>{{product.product}}</td>
+                <td>{{product.value}} {{product.currency.iso_code}}</td>
+                <td>{{product.surcharge}} {{product.currency.iso_code}}</td>
+                <td> {{ product.sent_from }} > {{ product.sent_to }} </td>
+                <td> {{ product.created_at }} </td>
+            </tr>
+        {% endfor %}
+  </tbody>
+</table>
+    </div>
+
+{% if object_list %}
+    {% bootstrap_paginate page_obj range=10 show_first_last="true" %}
+{% endif %}
+
 </div>
 
     <script>
@@ -49,7 +73,6 @@
         });
         function cloneMore(selector, type) {
             var newElement = $(selector).clone(true);
-            console.log(newElement)
             newElement.find(':input').each(function () {
                 var name = $(this).attr('name') + 1;
                 var id = 'id_' + name;
@@ -60,51 +83,49 @@
     </script>
 
 <script>
+        window.variables = {
+            csrfToken: '{{ csrf_token }}',
+        }
+
         $(document).ready(function () {
             $('.transaction-confirm').on('click', function (e) {
                 e.preventDefault();
             let form = $(this).closest('.transaction-form');
             let data = getFormData(form);
-            {#console.log(data)#}
-
             let url = form.attr('action');
-            {#console.log(url)#}
-
-
                 let sent_to_Id = data["sent_to"];
-                {#console.log('sent_to_Id')#}
-                {#console.log(sent_to_Id)#}
                 delete data["sent_to"];
+                            console.log("data", data)
+
                 let newData = [];
-                console.log(data)
                 {#let product = data['product'];#}
                 {#let value = data['value'];#}
-                {#newData.push({"sent_to": sent_to_Id, "product": product, "value": value})#}
-
 
                 Object.keys(data).forEach(function (key, index) {
                     let product = data[key]
                     delete data[key]
+                    console.log(">>>", data)
                      Object.keys(data).forEach(function (key, index) {
                          let value = data[key]
-
                             if (data[key]) {
                                 newData.push({"sent_to": sent_to_Id, "product": product, "value": value})
+                                delete data[key]
                             }
-                     })
+                      })
                  })
+         console.log("New data", newData)
                 data = {"data": JSON.stringify(newData)}
-                // console.log('newData777', newData)
-                // console.log('data', data)
+
                 form.find('input').each(function () {
                     $(this).val("")
                 });
                 form.find('select').val("");
+
                 transactionConfirmRequest(form, url, data)
             });
 
     const transactionConfirmRequest = (form, url, data) => {
-        console.log('data33', data)
+        {#console.log('data33', data)#}
         $.ajax({
             url: url,
             method: 'POST',
@@ -117,15 +138,15 @@
             );
 
         }).fail(function (data) {
-            console.log('bad data', data)
+            {#console.log('bad data', data)#}
             data = data.responseJSON;
-            {#for (let a in data) {#}
-            {#    if (a === 'non_field_errors') {#}
-            {#        $('.change-validation-message').append(`<p class="excanger-form-validation-backend-checks" style="color: darkred">${data[a][0]}</p>`);#}
-            {#    } else {#}
-            {#        $(`#id_${a}:not([type='hidden'])`).closest('div').append(`<p class="excanger-form-validation-backend-checks" style="color: darkred">${data[a][0]}</p>`);#}
-            {#    }#}
-            {# }#}
+            for (let a in data) {
+                if (a === 'non_field_errors') {
+                    $('.change-validation-message').append(`<p class="excanger-form-validation-backend-checks" style="color: darkred">${data[a][0]}</p>`);
+                } else {
+                    $(`#id_${a}:not([type='hidden'])`).closest('div').append(`<p class="excanger-form-validation-backend-checks" style="color: darkred">${data[a][0]}</p>`);
+                }
+             }
         })
     }
 
@@ -139,7 +160,6 @@
 
                 return indexed_array;
             }
-
         });
 
 </script>
@@ -147,40 +167,32 @@
 {% endblock %}
 
 
-
-{#<script>#}
+{#    <script>#}
 {##}
-{#    $(document).on('submit', '#post-form',function(e){#}
-{#    $.ajax({#}
-{#        type:'POST',#}
-{#        url:'{% url "create" %}',#}
-{#        data:{#}
-{#            sent_to:$('#id_sent_to').val(),#}
-{#            product:$('#id_product').val(),#}
-{#            value:$('#id_value').val(),#}
-{#            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),#}
-{#            action: 'post'#}
-{#        },#}
-{#        success:function(json){#}
-{#            document.getElementById("post-form").reset();#}
-{#            $(".posts").prepend('<div class="col-md-6">'+#}
-{#                '<div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">' +#}
-{#                    '<div class="col p-4 d-flex flex-column position-static">' +#}
-{#                        '<h3 class="mb-0">' + json.title + '</h3>' +#}
-{#                        '<p class="mb-auto">' + json.description + '</p>' +#}
-{#                    '</div>' +#}
-{#                '</div>' +#}
-{#            '</div>'#}
-{#            )#}
-{#        },#}
-{#        error : function(xhr,errmsg,err) {#}
-{#        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console#}
-{#    }#}
-{#    });#}
-{# });#}
+{#        window.variables = {#}
+{#            csrfToken: '{{ csrf_token }}',#}
+{#        }#}
 {##}
-{#</script>#}
-
-
-
-
+{#        $(document).on('submit', '#post-form', function (e) {#}
+{#            e.preventDefault();#}
+{##}
+{#            $.ajax({#}
+{#                type: 'POST',#}
+{#                url: '{% url "create_transaction_api"%}',#}
+{#                headers: {"X-CSRFToken": variables.csrfToken},#}
+{#                data: {#}
+{#                    client: $('#id_sent_to').val(),#}
+{#                    product: $('#id_product').val(),#}
+{#                    value: $('#id_value').val(),#}
+{#                    action: 'post',#}
+{#                },#}
+{#                success: function (json) {#}
+{#                    document.getElementById("post-form").reset();#}
+{#                    console.log("succsess!")#}
+{#                },#}
+{#                error: function (xhr, errmsg, err) {#}
+{#                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console#}
+{#                }#}
+{#            });#}
+{#        });#}
+{#    </script>#}

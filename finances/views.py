@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.views.generic import ListView, FormView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Product, Account
+from .models import Product, Account, Transaction
 from .forms import ProductForm, TransactionForm
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import CreateAPIView, ListAPIView
@@ -41,12 +41,12 @@ class ProductView(LoginRequiredMixin, FormView, ListView):
 
 
 class TransactionView(LoginRequiredMixin, FormView, ListView):
-    paginate_by = 5
+    paginate_by = 10
     form_class = TransactionForm
     template_name = "finances/product_transaction.html"
 
     def get_queryset(self):
-        queryset = Product.objects.all().order_by('-id')
+        queryset = Transaction.objects.all().order_by('-id')
         return queryset
 
     def form_valid(self, form):
