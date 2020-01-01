@@ -33,19 +33,19 @@ class TransactionSerializer(serializers.Serializer):
         file.write('{}\n'.format(  1111  ))
 
     def create(self, validated_data):
-        pass
-        # product = validated_data['product']
-        # value = validated_data['value']
+        # pass
+        product = validated_data['product']
+        value = validated_data['value']
 
-        # obj = Transaction.objects.create(
-        #         sent_from=self.context['request'].user,
-        #         sent_to=validated_data['sent_to'],
-        #         product=product,
-        #         value=validated_data['value'],
-        #         currency=product.currency,
-        #         surcharge=value - product.cost,
-        #     )
-        # return obj
+        obj = Transaction.objects.create(
+                sent_from=self.context['request'].user,
+                sent_to=validated_data['sent_to'],
+                product=product,
+                value=validated_data['value'],
+                currency=product.currency,
+                surcharge=value - product.cost,
+            )
+        return obj
 
     # def validate(self, data):
     #     """

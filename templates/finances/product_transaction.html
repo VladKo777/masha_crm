@@ -12,7 +12,7 @@
                 {{ form.sent_to|as_crispy_field }}
             </div>
             <div class='table'>
-                <table class='no_error'>
+                <fieldset>
                     <div class="form-row col-12">
                         <div class="col-lg-4">
                             {{ form.product|as_crispy_field }}
@@ -21,7 +21,7 @@
                             {{ form.value|as_crispy_field }}
                         </div>
                     </div>
-                </table>
+                </fieldset>
             </div>
             <button class="ml-3 btn btn-primary" type="button" id="add_more">
                 <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
@@ -36,7 +36,6 @@
 <div class="table-responsive">
 <table class="table">
         <thead class="">
-        {#  <thead class="thead-dark">#}
         <tr>
             <th scope="col">Id</th>
             <th scope="col">Назва продукта</th>
@@ -69,14 +68,14 @@
 
     <script>
         $('#add_more').click(function () {
-            cloneMore('div.table:last', 'service');
+            cloneMore('div.table:last');
         });
-        function cloneMore(selector, type) {
+        function cloneMore(selector) {
             var newElement = $(selector).clone(true);
             newElement.find(':input').each(function () {
-                var name = $(this).attr('name') + 1;
-                var id = 'id_' + name;
-                $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+                {#var name = $(this).attr('name') + 1;#}
+                {#var id = 'id_' + name;#}
+                {#$(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');#}
             });
             $(selector).after(newElement);
          }
@@ -91,31 +90,29 @@
             $('.transaction-confirm').on('click', function (e) {
                 e.preventDefault();
             let form = $(this).closest('.transaction-form');
+            {#form.validate({#}
+            {#    rules: {#}
+            {#            value: "required",#}
+            {#    },#}
+            {#    messages: {#}
+            {#            value: "Please specify your name",#}
+            {#    }#}
+            {# });#}
             let data = getFormData(form);
+            let sent_to_id = data["sent_to"];
+
+            let fieldsets = form.find("fieldset");
+            let newData = [];
+            let errors = [];
+
+            fieldsets.each(function () {
+                let fieldset = $(this).serializeArray()
+                {#console.log(fieldset)#}
+                newData.push({"sent_to":sent_to_id , "product": fieldset[0]["value"], "value": fieldset[1]["value"]})
+             });
+
             let url = form.attr('action');
-                let sent_to_Id = data["sent_to"];
-                delete data["sent_to"];
-                            console.log("data", data)
-
-                let newData = [];
-                {#let product = data['product'];#}
-                {#let value = data['value'];#}
-
-                Object.keys(data).forEach(function (key, index) {
-                    let product = data[key]
-                    delete data[key]
-                    console.log(">>>", data)
-                     Object.keys(data).forEach(function (key, index) {
-                         let value = data[key]
-                            if (data[key]) {
-                                newData.push({"sent_to": sent_to_Id, "product": product, "value": value})
-                                delete data[key]
-                            }
-                      })
-                 })
-         console.log("New data", newData)
                 data = {"data": JSON.stringify(newData)}
-
                 form.find('input').each(function () {
                     $(this).val("")
                 });
