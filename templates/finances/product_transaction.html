@@ -73,9 +73,9 @@
         function cloneMore(selector) {
             var newElement = $(selector).clone(true);
             newElement.find(':input').each(function () {
-                {#var name = $(this).attr('name') + 1;#}
-                {#var id = 'id_' + name;#}
-                {#$(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');#}
+                var name = $(this).attr('name') + 1;
+                var id = 'id_' + name;
+                $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
             });
             $(selector).after(newElement);
          }
@@ -90,39 +90,36 @@
             $('.transaction-confirm').on('click', function (e) {
                 e.preventDefault();
             let form = $(this).closest('.transaction-form');
-            {#form.validate({#}
-            {#    rules: {#}
-            {#            value: "required",#}
-            {#    },#}
-            {#    messages: {#}
-            {#            value: "Please specify your name",#}
-            {#    }#}
-            {# });#}
+            let url = form.attr('action');
             let data = getFormData(form);
             let sent_to_id = data["sent_to"];
 
             let fieldsets = form.find("fieldset");
             let newData = [];
-            let errors = [];
-
+            let errors = "False";
             fieldsets.each(function () {
                 let fieldset = $(this).serializeArray()
-                {#console.log(fieldset)#}
                 newData.push({"sent_to":sent_to_id , "product": fieldset[0]["value"], "value": fieldset[1]["value"]})
              });
 
-            let url = form.attr('action');
+            Object.keys(data).forEach(function (key) {
+                if (data[key].length == 0) {
+                    errors = "True";
+                    $("#id_" + key).css('border', 'solid 1px red');
+                } else {
+                    $("#id_" + key).css('border', 'solid 1px #ced4da');
+                }
+            })
                 data = {"data": JSON.stringify(newData)}
-                form.find('input').each(function () {
-                    $(this).val("")
-                });
-                form.find('select').val("");
 
-                transactionConfirmRequest(form, url, data)
+                if (errors == "False") {
+                form.find('input').each(function () { $(this).val("") });
+                form.find('select').val("");
+                    transactionConfirmRequest(form, url, data)
+                }
             });
 
     const transactionConfirmRequest = (form, url, data) => {
-        {#console.log('data33', data)#}
         $.ajax({
             url: url,
             method: 'POST',
@@ -135,7 +132,6 @@
             );
 
         }).fail(function (data) {
-            {#console.log('bad data', data)#}
             data = data.responseJSON;
             for (let a in data) {
                 if (a === 'non_field_errors') {
